@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # import libraries and preprocess the data
-
-# In[1]:
-
-
 import os.path
 import gspread
 import json
@@ -51,24 +43,18 @@ data = sheet.get_all_records()
 last_records = data[-17280:]
 # print(last_records)
 
-
 # In[2]:
-
 
 raw_weather_df = pd.DataFrame(last_records)
 print(raw_weather_df)
 
-
 # In[3]:
-
 
 raw_weather_df.drop(raw_weather_df.columns[[6,7,9]],axis=1,inplace=True)
 preprocessed_weather_df = raw_weather_df
 print(preprocessed_weather_df)
 
-
 # In[4]:
-
 
 preprocessed_weather_df["datetime"] = pd.to_datetime(preprocessed_weather_df["DATE"]+' '+preprocessed_weather_df["TIME"])
 # print(preprocessed_weather_df)
@@ -76,53 +62,7 @@ preprocessed_weather_df["datetime"] = pd.to_datetime(preprocessed_weather_df["DA
 preprocessed_weather_df = preprocessed_weather_df.drop(['DATE','TIME'],axis = 1)
 print(preprocessed_weather_df)
 
-
 # # check status of data
-
-# In[5]:
-
-
-result1 = adfuller(preprocessed_weather_df['TEMPERATURE'])
-print('ADF Statistic: %f' % result1[0])
-print('p-value: %f' % result1[1])
-
-
-# In[6]:
-
-
-result2 = adfuller(preprocessed_weather_df['HUMIDITY'])
-print('ADF Statistic: %f' % result2[0])
-print('p-value: %f' % result2[1])
-
-
-# In[7]:
-
-
-result3 = adfuller(preprocessed_weather_df['PRESSURE'])
-print('ADF Statistic: %f' % result3[0])
-print('p-value: %f' % result3[1])
-
-
-# In[8]:
-
-
-result4 = adfuller(preprocessed_weather_df['LUX'])
-print('ADF Statistic: %f' % result4[0])
-print('p-value: %f' % result4[1])
-
-
-# In[9]:
-
-
-result5 = adfuller(preprocessed_weather_df['WIND SPEED'])
-print('ADF Statistic: %f' % result5[0])
-print('p-value: %f' % result5[1])
-
-
-# # format data that suitable to model
-
-# In[61]:
-
 
 pressure_data = preprocessed_weather_df[["datetime","PRESSURE"]]
 pressure_data.dropna(inplace=True)
@@ -147,17 +87,6 @@ model.fit(pressure_data, freq='5T')
 
 future = model.make_future_dataframe(pressure_data, periods=12)
 forecast = model.predict(future)
-
-
-# In[63]:
-
-
-forecast
-
-
-# # Zambretti Algorithm
-
-# In[64]:
 
 
 def zambretti(pressure, trend, is_northern_hemisphere=True):
