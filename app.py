@@ -126,7 +126,5 @@ def get_forecast():
     is_northern_hemisphere = True 
     zambretti_forecast = zambretti(pressure_forecast, pressure_trend, is_northern_hemisphere)
 
-    return jsonify({"forecast": zambretti_forecast})
-
 if __name__ == "__main__":
     app.run(debug=True, port=5000) # runs the application
