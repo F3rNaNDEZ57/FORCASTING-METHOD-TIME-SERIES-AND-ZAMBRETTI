@@ -89,35 +89,35 @@ def get_forecast():
     forecast = model.predict(future)
     
     
-    def zambretti(pressure, trend, is_northern_hemisphere=True):
-        zambretti_dict = {
-            'A': 'Settled fine', 'B': 'Fine weather', 'C': 'Becoming fine', 'D': 'Fairly fine, improving', 'E': 'Fairly fine, possible showers', 'F': 'Showery early, improving',
-            'G': 'Changeable', 'H': 'Fairly fine, showers likely', 'I': 'Showery bright intervals', 'J': 'Showery, becoming less settled', 'K': 'Changeable, some rain',
-            'L': 'Unsettled, short fine intervals', 'M': 'Unsettled, rain later', 'N': 'Unsettled, some rain', 'O': 'Very unsettled, rain', 'P': 'Stormy, much rain'
-        }
+    # def zambretti(pressure, trend, is_northern_hemisphere=True):
+    #     zambretti_dict = {
+    #         'A': 'Settled fine', 'B': 'Fine weather', 'C': 'Becoming fine', 'D': 'Fairly fine, improving', 'E': 'Fairly fine, possible showers', 'F': 'Showery early, improving',
+    #         'G': 'Changeable', 'H': 'Fairly fine, showers likely', 'I': 'Showery bright intervals', 'J': 'Showery, becoming less settled', 'K': 'Changeable, some rain',
+    #         'L': 'Unsettled, short fine intervals', 'M': 'Unsettled, rain later', 'N': 'Unsettled, some rain', 'O': 'Very unsettled, rain', 'P': 'Stormy, much rain'
+    #     }
         
-        if is_northern_hemisphere:
-            if trend < 0:  # falling
-                value = int((1020 - pressure) * 0.033) + 65
-            elif trend > 0:  # rising
-                value = int((1050 - pressure) * 0.033) + 65
-            else:  # steady
-                value = int((1030 - pressure) * 0.033) + 65
-        else:  # southern hemisphere
-            if trend < 0:  # falling
-                value = int((1050 - pressure) * 0.033) + 65
-            elif trend > 0:  # rising
-                value = int((1020 - pressure) * 0.033) + 65
-            else:  # steady
-                value = int((1030 - pressure) * 0.033) + 65
+    #     if is_northern_hemisphere:
+    #         if trend < 0:  # falling
+    #             value = int((1020 - pressure) * 0.033) + 65
+    #         elif trend > 0:  # rising
+    #             value = int((1050 - pressure) * 0.033) + 65
+    #         else:  # steady
+    #             value = int((1030 - pressure) * 0.033) + 65
+    #     else:  # southern hemisphere
+    #         if trend < 0:  # falling
+    #             value = int((1050 - pressure) * 0.033) + 65
+    #         elif trend > 0:  # rising
+    #             value = int((1020 - pressure) * 0.033) + 65
+    #         else:  # steady
+    #             value = int((1030 - pressure) * 0.033) + 65
     
-        # Check if value is within the valid range for chr()
-        if 0 <= value <= 1_114_111:
-            letter = chr(value)
-        else:
-            return 'Invalid prediction due to out of range pressure value'
+    #     # Check if value is within the valid range for chr()
+    #     if 0 <= value <= 1_114_111:
+    #         letter = chr(value)
+    #     else:
+    #         return 'Invalid prediction due to out of range pressure value'
     
-        return zambretti_dict.get(letter, 'Invalid prediction')
+    #     return zambretti_dict.get(letter, 'Invalid prediction')
     
     
     # # Do the Short Term Forecasting
@@ -128,13 +128,28 @@ def get_forecast():
     pressure_trend = forecast['trend'].values[-1]
     pressure_forecast = forecast['yhat1'].values[-1]
     is_northern_hemisphere = True
-    zambretti_forecast = zambretti(pressure_forecast, pressure_trend, is_northern_hemisphere)
-    print(zambretti_forecast)
+    # zambretti_forecast = zambretti(pressure_forecast, pressure_trend, is_northern_hemisphere)
+    # print(zambretti_forecast)
 
     
-    return jsonify({
-        'pressure_trend': pressure_trend,
-        'pressure_forecast': pressure_forecast,
-        'zambretti_forecast': zambretti_forecast
-    })
+    # ThingSpeak settings
+      url = 'https://api.thingspeak.com/update'
+      api_key = 'P5V9UF0WNJDHS3U0'
+      
+      data = {
+          'api_key': api_key,
+          'field1': pressure_trend,
+          'field2': pressure_forecast
+      }
+      
+      # Send the data
+      response = requests.post(url, params=data)
+    
+      if response.status_code == 200:
+          return 'Data sent to ThingSpeak successfully'
+      else:
+          return 'Failed to send data to ThingSpeak'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
 
