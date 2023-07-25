@@ -6,6 +6,7 @@ from google.oauth2.service_account import Credentials
 import pandas as pd
 from neuralprophet import NeuralProphet
 import pickle
+import requests
 
 app = Flask(__name__)
 
