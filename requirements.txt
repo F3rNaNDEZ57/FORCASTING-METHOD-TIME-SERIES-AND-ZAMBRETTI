@@ -8,3 +8,4 @@ pickle-mixin
 statsmodels
 absl-py==1.3.0
 aiohttp==3.8.4
+flask
