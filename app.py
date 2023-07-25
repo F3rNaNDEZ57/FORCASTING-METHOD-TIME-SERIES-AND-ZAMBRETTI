@@ -132,9 +132,9 @@ def get_forecast():
     print(zambretti_forecast)
 
     
-return jsonify({
-    'pressure_trend': pressure_trend,
-    'pressure_forecast': pressure_forecast,
-    'zambretti_forecast': zambretti_forecast
-})
+    return jsonify({
+        'pressure_trend': pressure_trend,
+        'pressure_forecast': pressure_forecast,
+        'zambretti_forecast': zambretti_forecast
+    })
 
