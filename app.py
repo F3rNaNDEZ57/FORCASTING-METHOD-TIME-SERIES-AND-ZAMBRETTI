@@ -133,22 +133,22 @@ def get_forecast():
 
     
     # ThingSpeak settings
-      url = 'https://api.thingspeak.com/update'
-      api_key = 'P5V9UF0WNJDHS3U0'
+    url = 'https://api.thingspeak.com/update'
+    api_key = 'P5V9UF0WNJDHS3U0'
       
-      data = {
-          'api_key': api_key,
-          'field1': pressure_trend,
-          'field2': pressure_forecast
-      }
+    data = {
+      'api_key': api_key,
+      'field1': pressure_trend,
+      'field2': pressure_forecast
+    }
       
-      # Send the data
-      response = requests.post(url, params=data)
-    
-      if response.status_code == 200:
-          return 'Data sent to ThingSpeak successfully'
-      else:
-          return 'Failed to send data to ThingSpeak'
+    # Send the data
+    response = requests.post(url, params=data)
+
+    if response.status_code == 200:
+        return 'Data sent to ThingSpeak successfully'
+    else:
+        return 'Failed to send data to ThingSpeak'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
